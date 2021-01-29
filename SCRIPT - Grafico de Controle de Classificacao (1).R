@@ -1,10 +1,10 @@
 
-#PARÂMETROS DA SIMULAÇÃO
+#SIMULATION PARAMETERS
 Tamanho.amostras = 250
 Densidade.y =  "simetrico" # "Assimetrico"
 Volume.dos.dados = "Nao.Big" # "Big" "
 Presenca.de.Multicolinearidade = "X.indep" # X.multicol
-q = c(0,0.1,0.4,0.6,1) # Criterio de Discretização
+q = c(0,0.1,0.4,0.6,1) # Criterio de DiscretizaÃ§Ã£o
 
 
 gera.dados = function(n, tipo.y, tipo.x, relacao){
@@ -72,7 +72,7 @@ dados = gera.dados(n=Tamanho.amostras, tipo.y = Densidade.y,
                    tipo.x = Volume.dos.dados, relacao= Presenca.de.Multicolinearidade)
 
 
-################################################
+################################################ 
 varResp = 'y'
 Medidas = function(mc){
   PE = (sum(mc[1,])*sum(mc[,1])+sum(mc[2,])*sum(mc[,2])+
@@ -138,11 +138,11 @@ ValidCruzada = function(cls, dados, formula, kfolds = 10, ...){
 ValidCruzadarep = function(cls, dados, formula, kfolds = 10, reps = 10){
   x = data.frame()
   for(i in 1:reps) x = rbind(x, ValidCruzada(cls, dados, formula, kfolds)$Media) 
-  avg = aggregate(. ~ Classificador, data = x, FUN = mean)### valor guardado que entra no gráfico da figura 5.3
+  avg = aggregate(. ~ Classificador, data = x, FUN = mean)### valor guardado que entra no grÃ¡fico da figura 5.3
   std = aggregate(. ~ Classificador, data = x, FUN = sd)
-  return(list("Media Global"= avg, "Erro Padrão Validação Cruzada" = std, Modelos = x))
+  return(list("Media Global"= avg, "Erro PadrÃ£o ValidaÃ§Ã£o Cruzada" = std, Modelos = x))
 }
-###### FASE I   
+###### PHASE I.1  
 ############################################################# SVM
 library(kernlab)
 SVM1 = function(treino, teste, formula){
@@ -177,7 +177,7 @@ medSVM3 = function(treino, teste, formula){
   pred = SVM3(treino, teste, formula)
   return(AuxSaida(pred, teste, formula, alg))
 }
-####################################################ARVORE DE DECISÃO
+#################################################### DECISION TREE
 Arvore = function(treino, teste, formula){
   library(rpart) 
   cls = rpart(formula, data = data.frame(treino), method = 'class')
@@ -186,7 +186,7 @@ Arvore = function(treino, teste, formula){
 }
 
 medArvore = function(treino, teste, formula){ 
-  alg = 'Árvore de Decisão' 
+  alg = 'Ãrvore de DecisÃ£o' 
   pred = Arvore(treino, teste, formula)
   return(AuxSaida(pred, teste, formula, alg))
 }
@@ -199,7 +199,7 @@ KNN = function(treino, teste, formula, K = (nrow(treino)/3)){
 }
 
 medKNN = function(treino, teste, formula, K = (nrow(treino)/3)){ 
-  alg = paste(K, '- Vizinhos mais Próximos')
+  alg = paste(K, '- Vizinhos mais PrÃ³ximos')
   pred = KNN(treino, teste, formula, K)
   return(AuxSaida(pred, teste, formula, alg))
 }
@@ -212,7 +212,7 @@ LDA = function(treino, teste, formula){
 }
 
 medLDA = function(treino, teste, formula){ 
-  alg = 'Análise Discriminante Linear' 
+  alg = 'AnÃ¡lise Discriminante Linear' 
   pred = LDA(treino, teste, formula)
   return(AuxSaida(pred, teste, formula, alg))
 }
@@ -225,11 +225,11 @@ QDA = function(treino, teste, formula){
 }
 
 medQDA = function(treino, teste, formula){
-  alg = 'Análise Discriminante Quadrática' 
+  alg = 'AnÃ¡lise Discriminante QuadrÃ¡tica' 
   pred = QDA(treino, teste, formula) 
   return(AuxSaida(pred, teste, formula, alg))
 }
-#######################################################REDE NEURAL 
+####################################################### NEURAL NETWORK
 library(nnet)
 ANN = function(treino, teste, formula, size = 3){
   classifier = nnet(formula, data = data.frame(treino), size = 3)
@@ -252,11 +252,11 @@ Multinomial = function(treino, teste, formula){
   return(pred)
 }
 medMultinomial = function(treino, teste, formula){
-  alg = 'Regressão Multinomial' 
+  alg = 'RegressÃ£o Multinomial' 
   pred = Multinomial(treino, teste, formula)
   return(AuxSaida(pred, teste, formula, alg))
 }
-##################################################FLORESTAS ALEATÓRIAS 
+################################################## RANDOM FOREST
 Floresta = function(treino, teste, formula){
   library(randomForest) 
   cls = randomForest(as.factor(y)~., data = data.frame(treino),importance= TRUE,
@@ -265,7 +265,7 @@ Floresta = function(treino, teste, formula){
   return(pred)
 }
 medFloresta = function(treino, teste, formula){ 
-  alg = 'Floresta Aleatória' 
+  alg = 'Floresta AleatÃ³ria' 
   pred = Floresta(data.frame(treino), data.frame(teste), formula)
   return(AuxSaida(pred, teste, formula, alg))
 }
@@ -351,7 +351,7 @@ J.k.f = function(dados,cls, formula,...){
   avg = aggregate(. ~ Classificador, data = vcs, FUN = mean)
   bvg = aggregate(. ~ Classificador, data = vcs, FUN = median)
   std = aggregate(. ~ Classificador, data = vcs, FUN = sd)
-  return(list("Média" = avg, "Desvio" = std, Mediana= bvg, saidas = vcs))
+  return(list("MÃ©dia" = avg, "Desvio" = std, Mediana= bvg, saidas = vcs))
 }
 
 
@@ -359,10 +359,10 @@ J.k.f = function(dados,cls, formula,...){
 ##LIMITES.DE.CONTROLE = J.k.f(dados,get(medida),formula)
 
 LIMITES.DE.CONTROLE = J.k.f(dados,medida,formula)
-LC.0 =  LIMITES.DE.CONTROLE$Média[[2]]
-LC.1 =  LIMITES.DE.CONTROLE$Média[[3]]
-LC.2 = LIMITES.DE.CONTROLE$Média[[4]]
-LC.3 = LIMITES.DE.CONTROLE$Média[[5]]
+LC.0 =  LIMITES.DE.CONTROLE$MÃ©dia[[2]]
+LC.1 =  LIMITES.DE.CONTROLE$MÃ©dia[[3]]
+LC.2 = LIMITES.DE.CONTROLE$MÃ©dia[[4]]
+LC.3 = LIMITES.DE.CONTROLE$MÃ©dia[[5]]
 
 s.0 =  LIMITES.DE.CONTROLE$Desvio[[2]]
 s.1 =  LIMITES.DE.CONTROLE$Desvio[[3]]
@@ -390,7 +390,7 @@ lim.0;lim.1;lim.2;lim.3 ;verificacao.dos.intervalos
 # cls = get(medida) # Modelo Vencedor
 cls = medida
 
-##########
+########## PHASE I.2
 TUNAGEM = function(cls, alpha,dados){
   rep = 10
   contador = 1
@@ -429,7 +429,7 @@ TUNAGEM = function(cls, alpha,dados){
       }
       prop.dos.erros = sum(erros)/n
       MATRIZ.DE.ERROS = rbind(erros,MATRIZ.DE.ERROS)
-################################ PAREI AQUI #################################
+################################
       NOMINAL= 1/prop.dos.erros
       Gamma.corrigido= ifelse((NOMINAL > (1/(alpha/2))),Gamma.corrigido- 0.5,  
        ifelse((NOMINAL < (1/(alpha))),Gamma.corrigido+ 0.5,Gamma.corrigido))
@@ -447,24 +447,24 @@ TUNAGEM = function(cls, alpha,dados){
       
       contador= contador+1
       ARL0s= rbind(NOMINAL,ARL0s)
-      A= paste(contador,"-ésima iteração", "com Gamma =", 
+      A= paste(contador,"-Ã©sima iteraÃ§Ã£o", "com Gamma =", 
                Gamma.corrigido, NOMINAL)
       print(A)
     }
     Gammas = rbind(Gamma.corrigido,Gammas)
   }
-  return(list("ARL ZERO" = ARL0s, "Parâmetros de Tunagem Gammas" =  
+  return(list("ARL ZERO" = ARL0s, "ParÃ¢metros de Tunagem Gammas" =  
                Gammas, 
-              "Número de iterações"= contador,
+              "NÃºmero de iteraÃ§Ãµes"= contador,
               "Gammas"=Gammas, "Matriz de Erros"= MATRIZ.DE.ERROS))
 }
 
-simulacao = TUNAGEM(cls, alpha=0.05,dados) # Neste exemplo só foi possível rodar para alpha 0.05
+simulacao = TUNAGEM(cls, alpha=0.05,dados) # Neste exemplo sÃ³ foi possÃ­vel rodar para alpha 0.05
 par(mfrow=c(2,1))
 ref = bquote("Gamma's Calibrados para" ~  alpha == 0.05)
-boxplot(simulacao$`Parâmetros de Tunagem Gammas`, main = ref, horizontal = T, col = "lightblue")
-points(mean(simulacao$`Parâmetros de Tunagem Gammas`),1,'*',col = 'red')
-simulacao$`Número de iterações`
+boxplot(simulacao$`ParÃ¢metros de Tunagem Gammas`, main = ref, horizontal = T, col = "lightblue")
+points(mean(simulacao$`ParÃ¢metros de Tunagem Gammas`),1,'*',col = 'red')
+simulacao$`NÃºmero de iteraÃ§Ãµes`
 Gamma.c = median(simulacao$Gammas[[1]])
 
 LSC.0 = LC.0 + 3*Gamma.c*s.0
@@ -484,7 +484,7 @@ lim.3.c = paste0('[',round(LIC.3,3) ,';',round(LC.3,3) ,';',round(LSC.3,3) ,']')
 lim.0; lim.1;lim.2;lim.3; lim.0.c; lim.1.c;lim.2.c;lim.3.c
 
 verificacao.dos.intervalos
-######### Fase III
+######### PHASE II
 
 
 
@@ -535,12 +535,12 @@ abline(v= mean(desempenhos), col = "red", lwd = 2)
 median(desempenhos)
 mean(desempenhos)
 hist(apply(des$Erros, 1, sum), main = "Histograma dos Erros", 
-     ylab = "Frequência nas 500 repetições", xlab= "Soma dos Erros das n Amostras Unitárias", 
+     ylab = "FrequÃªncia nas 500 repetiÃ§Ãµes", xlab= "Soma dos Erros das n Amostras UnitÃ¡rias", 
      col = "tomato")
 
 plot(dados$y, ylim = c(min(dados$y,LICc-2) ,max(dados$y,LSCc+2)),pch=20, xlim= c(1,length(dados$y)+1), cex.main=1.2,
   xlab= "Unidades Amostrais", ylab=expression(paste("Valores Preditos"," ", hat(y))), col=ifelse(dados$y>LSCc | dados$y<LICc,"red","black"),
-     main="Gráfico de Controle dos Rankings Preditos",  col.main="blue",col.lab="blue",
+     main="GrÃ¡fico de Controle dos Rankings Preditos",  col.main="blue",col.lab="blue",
      font.main=2, font.lab=2, cex.lab=1, cex.sub=1)
 lines(c(rep(LSCc,length(dados$y))),col ="red", lwd= 2)
 lines(c(rep(LICc,length(dados$y))),col ="red", lwd= 2)
